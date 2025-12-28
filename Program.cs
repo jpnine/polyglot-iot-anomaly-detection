@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SensorApi.Services;
 using System.Threading.Channels;
 
 namespace SensorApi
@@ -14,8 +15,14 @@ namespace SensorApi
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-            
+
             builder.Services.AddHttpClient();
+
+            // Register the Channel (Shared Pipe)
+            builder.Services.AddSingleton<Channel<SensorReading>>(_ => Channel.CreateUnbounded<SensorReading>());
+
+            // Register the Processor (Background Worker)
+            builder.Services.AddHostedService<SensorProcessor>();
 
             var app = builder.Build();
 
@@ -29,7 +36,7 @@ namespace SensorApi
 
             app.UseAuthorization();
          
-            app.MapGet("/sensor", async ([FromBody] SensorReading reading, Channel<SensorReading> channel) =>
+            app.MapPost("/sensor", async ([FromBody] SensorReading reading, Channel<SensorReading> channel) =>
             {
                 // Write directly to the channel
                 await channel.Writer.WriteAsync(reading);
