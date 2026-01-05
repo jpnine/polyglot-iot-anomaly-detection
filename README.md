@@ -19,7 +19,7 @@ The project intentionally evolves over time as new concepts are learned and appl
 
 This project demonstrates a classic **Producer-Consumer** pattern combined with a **Microservices** approach:
 
-1.  **Ingestion (C#):** A .NET 8 Web API receives high-velocity sensor data.
+1.  **Ingestion (C#):** A .NET 10 Web API receives high-velocity sensor data.
 2.  **Buffering (System.Threading.Channels):** Data is immediately offloaded to an unbounded in-memory channel to ensure the API remains responsive.
 3.  **Processing (C# BackgroundService):** A hosted background worker reads from the channel.
 4.  **Analysis (Python/FastAPI):** The worker sends data to a Python microservice for anomaly detection.
